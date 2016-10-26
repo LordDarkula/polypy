@@ -30,6 +30,10 @@ class Expression:
 
         return exp.degree()
 
+    @abstractmethod
+    def __str__(self):
+        pass
+
     def __mul__(self, other):
         from .algebra import Multiplier
 
@@ -37,6 +41,16 @@ class Expression:
 
     def __rmul__(self, other):
         return self.__mul__(other)
+
+    def __pow__(self, power, modulo=None):
+        from .algebra import Exponent
+
+        return Exponent(self, power)
+
+    def __rpow__(self, other):
+        from  .algebra import Exponent
+
+        return Exponent(other, self)
 
     def __add__(self, other):
         from .algebra import Adder

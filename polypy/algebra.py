@@ -32,6 +32,21 @@ class Multiplier(Expression):
 
         return str(self.exp1) + str(self.exp2)
 
+class Exponent(Expression):
+    def __init__(self, base, exponent):
+        self.base = base
+        self.exponent = exponent
+
+    def __call__(self, val):
+        return self._val_of_exp(self.base, val) \
+               ** self._val_of_exp(self.exponent, val)
+
+    def degree(self):
+        return 100
+
+    def __str__(self):
+        return str(self.base) + "^" + str(self.exponent)
+
 class Adder(Expression):
     def __init__(self, exp1, exp2):
         self.exp1 = exp1
@@ -43,3 +58,9 @@ class Adder(Expression):
 
     def degree(self):
         max(self._calc_degree(self.exp1), self._calc_degree(self.exp2))
+
+    def __str__(self):
+        if self._calc_degree(self.exp2) > self._calc_degree(self.exp1):
+            return str(self.exp2) + " + " + str(self.exp1)
+
+        return str(self.exp1) + " + " + str(self.exp2)

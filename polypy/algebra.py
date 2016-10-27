@@ -1,18 +1,6 @@
 from .base import Expression
 
 
-class Identity(Expression):
-    def __call__(self, val):
-        return val
-
-    def degree(self):
-        return 1
-
-    def __str__(self):
-        return "x"
-
-x = Identity()
-
 class Multiplier(Expression):
     def __init__(self, exp1, exp2):
         self.exp1 = exp1
@@ -42,6 +30,9 @@ class Exponent(Expression):
                ** self._val_of_exp(self.exponent, val)
 
     def degree(self):
+        if isinstance(self.exponent, int):
+            return self.exponent
+
         return 100
 
     def __str__(self):
@@ -57,7 +48,7 @@ class Adder(Expression):
                + self._val_of_exp(self.exp2, val)
 
     def degree(self):
-        max(self._calc_degree(self.exp1), self._calc_degree(self.exp2))
+        return max(self._calc_degree(self.exp1), self._calc_degree(self.exp2))
 
     def __str__(self):
         if self._calc_degree(self.exp2) > self._calc_degree(self.exp1):

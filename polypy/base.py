@@ -59,3 +59,15 @@ class Expression:
 
     def __radd__(self, other):
         return self.__add__(other)
+
+class Identity(Expression):
+    def __call__(self, val):
+        return val
+
+    def degree(self):
+        return 1
+
+    def __str__(self):
+        return "x"
+
+x = Identity()

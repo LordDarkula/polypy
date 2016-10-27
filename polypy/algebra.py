@@ -1,17 +1,18 @@
 from .base import Expression
 
 
-class Multiplier(Expression):
+class Product(Expression):
     def __init__(self, exp1, exp2):
         self.exp1 = exp1
         self.exp2 = exp2
 
+    # TODO Override __mul__ and check if signature of any exp matches other and return approppriate exponent
     def __call__(self, val):
         return self._val_of_exp(self.exp1, val) \
                * self._val_of_exp(self.exp2, val)
 
     def __eq__(self, other):
-        if isinstance(other, Multiplier):
+        if isinstance(other, Product):
             if self.exp1 == other.exp1 or self.exp2 == other.exp2:
                 return True
 
@@ -53,7 +54,7 @@ class Exponent(Expression):
     def __str__(self):
         return str(self.base) + "^" + str(self.exponent)
 
-class Adder(Expression):
+class Sum(Expression):
     def __init__(self, exp1, exp2):
         self.exp1 = exp1
         self.exp2 = exp2
@@ -63,7 +64,7 @@ class Adder(Expression):
                + self._val_of_exp(self.exp2, val)
 
     def __eq__(self, other):
-        if isinstance(other, Multiplier):
+        if isinstance(other, Product):
             if self.exp1 == other.exp1 or self.exp2 == other.exp2:
                 return True
 

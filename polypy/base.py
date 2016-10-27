@@ -42,9 +42,14 @@ class Expression:
         pass
 
     def __mul__(self, other):
-        from .algebra import Multiplier
+        from .algebra import Product, Exponent
 
-        return Multiplier(self, other)
+        if self == other:
+            return Exponent(self, 2)
+
+        # TODO check if other isinstance of Product and return appropriate Exponent
+
+        return Product(self, other)
 
     def __rmul__(self, other):
         return self.__mul__(other)
@@ -60,9 +65,9 @@ class Expression:
         return Exponent(other, self)
 
     def __add__(self, other):
-        from .algebra import Adder
+        from .algebra import Sum
 
-        return Adder(self, other)
+        return Sum(self, other)
 
     def __radd__(self, other):
         return self.__add__(other)

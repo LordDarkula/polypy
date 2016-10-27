@@ -10,6 +10,16 @@ class Multiplier(Expression):
         return self._val_of_exp(self.exp1, val) \
                * self._val_of_exp(self.exp2, val)
 
+    def __eq__(self, other):
+        if isinstance(other, Multiplier):
+            if self.exp1 == other.exp1 or self.exp2 == other.exp2:
+                return True
+
+            if self.exp1 == other.exp2 or self.exp2 == other.exp1:
+                return True
+
+        return False
+
     def degree(self):
         return self._calc_degree(self.exp1) \
                + self._calc_degree(self.exp2)
@@ -46,6 +56,16 @@ class Adder(Expression):
     def __call__(self, val):
         return self._val_of_exp(self.exp1, val) \
                + self._val_of_exp(self.exp2, val)
+
+    def __eq__(self, other):
+        if isinstance(other, Multiplier):
+            if self.exp1 == other.exp1 or self.exp2 == other.exp2:
+                return True
+
+            if self.exp1 == other.exp2 or self.exp2 == other.exp1:
+                return True
+
+        return False
 
     def degree(self):
         return max(self._calc_degree(self.exp1), self._calc_degree(self.exp2))

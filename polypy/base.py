@@ -20,6 +20,13 @@ class Expression:
         return exp(val)
 
     @abstractmethod
+    def __eq__(self, other):
+        pass
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    @abstractmethod
     def degree(self):
         pass
 
@@ -63,6 +70,9 @@ class Expression:
 class Identity(Expression):
     def __call__(self, val):
         return val
+
+    def __eq__(self, other):
+        return isinstance(other, Identity)
 
     def degree(self):
         return 1

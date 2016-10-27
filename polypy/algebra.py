@@ -39,6 +39,11 @@ class Exponent(Expression):
         return self._val_of_exp(self.base, val) \
                ** self._val_of_exp(self.exponent, val)
 
+    def __eq__(self, other):
+        return isinstance(other, Exponent) \
+               and self.base == other.base \
+               and self.exponent == other.exponent
+
     def degree(self):
         if isinstance(self.exponent, int):
             return self.exponent

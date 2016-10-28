@@ -5,6 +5,7 @@ class Expression:
     Base class for all mathematical Expressions.
     Combiner operators such as + and * are
     implemented here.
+    ``Expression`` and all subclasses are immutable
     """
     __metaclass__ = ABCMeta
 
@@ -45,11 +46,27 @@ class Expression:
         from .algebra import Product, Exponent
 
         if self == other:
+            """ If both expressions are identical return the square. """
             return Exponent(self, 2)
 
-        # TODO check if other isinstance of Product and return appropriate Exponent
+        if isinstance(other, Exponent) and self == other.base:
+            """ If other is an Exponent and base matches this Expression,
+            return Exponent of same base with +1 exponent."""
+            return Exponent(self, other.exponent + 1)
+
+        if isinstance(other, Product):
+            """ If other is a Product and one of it's terms matches this Expression,
+            redistribute to multiply that term with this one first. """
+            if self == other.exp1:
+                return self._redistribute(other.exp1, other.exp2)
+
+            if self == other.exp2:
+                return self._redistribute(other.exp2, other.exp1)
 
         return Product(self, other)
+
+    def _redistribute(self, identical_exp, other_exp):
+        return (identical_exp * self) * other_exp
 
     def __rmul__(self, other):
         return self.__mul__(other)

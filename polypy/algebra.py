@@ -1,10 +1,13 @@
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 
 from .base import Expression
-from .exponent import Exponent
+
 
 class Commutative(Expression):
-
+    """
+    Base class for all commutative expressions
+    such as ``Product`` and ``Sum``.
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self, exp1, exp2):
@@ -15,6 +18,10 @@ class Commutative(Expression):
         return isinstance(other, self) and \
                (self.exp1 == other.exp1 and self.exp2 == other.exp2) or \
                (self.exp1 == other.exp2 and self.exp2 == other.exp1)
+
+    @abstractmethod
+    def __call__(self, val):
+        pass
 
 
 class Product(Commutative):

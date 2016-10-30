@@ -58,7 +58,7 @@ class Product(Commutative):
         return (identical_exp * self) * other_exp
 
     def __pow__(self, power, modulo=None):
-        return self.exp1**power + self.exp2**power
+        return self.exp1**power * self.exp2**power
 
 class Sum(Commutative):
     def __init__(self, exp1, exp2):

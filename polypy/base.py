@@ -43,7 +43,8 @@ class Expression:
         pass
 
     def __mul__(self, other):
-        from .algebra import Product, Exponent
+        from .algebra import Product
+        from .exponent import Exponent
 
         if self == other:
             """ If both expressions are identical return the square. """
@@ -58,12 +59,12 @@ class Expression:
         return self.__mul__(other)
 
     def __pow__(self, power, modulo=None):
-        from .algebra import Exponent
+        from .exponent import Exponent
 
         return Exponent(self, power)
 
     def __rpow__(self, other):
-        from  .algebra import Exponent
+        from  .exponent import Exponent
 
         return Exponent(other, self)
 

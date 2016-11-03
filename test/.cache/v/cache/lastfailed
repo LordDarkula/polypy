@@ -1,4 +1,0 @@
-{
-  "test_expression.py::TestExpression::test__calc_degree": true,
-  "test_expression.py::TestExpression::test__val_of_exp": true
-}

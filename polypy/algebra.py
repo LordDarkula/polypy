@@ -15,9 +15,9 @@ class Commutative(Expression):
         self.exp2 = exp2
 
     def __eq__(self, other):
-        return isinstance(other, self) and \
-               (self.exp1 == other.exp1 and self.exp2 == other.exp2) or \
-               (self.exp1 == other.exp2 and self.exp2 == other.exp1)
+        return isinstance(other, self.__class__) and \
+               ((self.exp1 == other.exp1 and self.exp2 == other.exp2) or
+               (self.exp1 == other.exp2 and self.exp2 == other.exp1))
 
     @abstractmethod
     def __call__(self, val):
@@ -43,16 +43,28 @@ class Product(Commutative):
         return str(self.exp1) + str(self.exp2)
 
     def __mul__(self, other):
+        if other == self.exp1:
+            return other * self.exp1 * self.exp2
+
+        if other == self.exp2:
+            return other * self.exp2 * self.exp1
+
         if isinstance(other, Product):
             """ If other is a Product and one of it's terms matches this Expression,
             redistribute to multiply that term with this one first. """
-            if self == other.exp1:
-                return self._redistribute(other.exp1, other.exp2)
+            if self.exp1 == other.exp1:
+                return self.exp2 * other.exp2 * self.exp1**2
 
-            if self == other.exp2:
-                return self._redistribute(other.exp2, other.exp1)
+            if self.exp2 == other.exp2:
+                return self.exp1 * other.exp1 * self.exp2**2
 
-            return super(Product, self).__mul__(other)
+            if self.exp1 == other.exp2:
+                return self.exp2 * other.exp1 * self.exp1**2
+
+            if self.exp2 == other.exp1:
+                return self.exp1 * other.exp2 * self.exp2**2
+
+        return super(Product, self).__mul__(other)
 
     def _redistribute(self, identical_exp, other_exp):
         return (identical_exp * self) * other_exp

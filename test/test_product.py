@@ -32,3 +32,7 @@ def test_multiply_x_and_linear_term():
 
 def test_multiply_two_linear_terms():
     assert (3 * x) * (2 * x) == 6 * x ** 2
+
+
+def test_multiply_two_linear_expressions():
+    assert str((x + 1) * (x + 2)) == "x^2 + 2x + x + 2"

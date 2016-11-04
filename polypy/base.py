@@ -43,14 +43,17 @@ class Expression:
         pass
 
     def __mul__(self, other):
-        from .algebra import Product
+        from .algebra import Product, Sum
         from .exponent import Exponent
+
+        if other == 1:
+            return x
 
         if self == other:
             """ If both expressions are identical return the square. """
             return Exponent(self, 2)
 
-        if isinstance(other, Product) or isinstance(other, Exponent):
+        if isinstance(other, Product) or isinstance(other, Exponent) or isinstance(other, Sum):
             return other * self
 
         return Product(self, other)
@@ -70,6 +73,9 @@ class Expression:
 
     def __add__(self, other):
         from .algebra import Sum
+
+        if self == other:
+            return 2 * self
 
         return Sum(self, other)
 

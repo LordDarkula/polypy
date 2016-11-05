@@ -82,6 +82,14 @@ class Expression:
     def __radd__(self, other):
         return self.__add__(other)
 
+    def __sub__(self, other):
+        from .algebra import Difference
+
+        if self == other:
+            return 0
+
+        return Difference(self, other)
+
 class Identity(Expression):
     def __call__(self, val):
         return val

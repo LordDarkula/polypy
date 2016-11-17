@@ -35,4 +35,5 @@ def test_multiply_two_linear_terms():
 
 
 def test_multiply_two_linear_expressions():
-    assert str((x + 1) * (x + 2)) == "x^2 + 2x + x + 2"
+    print((x + 1) * (x + 2))
+    assert (x + 1) * (x + 2) == (x**2 + 2*x + x + 2)

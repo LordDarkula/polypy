@@ -10,22 +10,17 @@ class Commutative(Expression):
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, expr1, expr2):
-        self._expr1 = expr1
-        self._expr2 = expr2
+    def __init__(self, *args):
+        self._exprs = set()
+        for arg in args:
+            self.exprs.add(arg)
 
     @property
-    def expr1(self):
-        return self._expr1
-
-    @property
-    def expr2(self):
-        return self._expr2
+    def exprs(self):
+        return self._exprs
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and \
-               ((self._expr1 == other.expr1 and self._expr2 == other.expr2) or
-               (self._expr1 == other.expr2 and self._expr2 == other.expr1))
+        return self._exprs == other.exprs
 
     @abstractmethod
     def __call__(self, val):

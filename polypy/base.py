@@ -13,6 +13,9 @@ class Expression:
     def __call__(self, val):
         pass
 
+    def __hash__(self):
+        return hash(self.__str__())
+
     @staticmethod
     def _val_of_exp(exp, val):
         if isinstance(exp, int):

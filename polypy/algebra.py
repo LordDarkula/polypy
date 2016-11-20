@@ -28,22 +28,31 @@ class Commutative(Expression):
 
 
 class Product(Commutative):
-    def __init__(self, expr1, expr2):
-        super(Product, self).__init__(expr1, expr2)
+    def __init__(self, *args):
+        super(Product, self).__init__(args)
 
     def __call__(self, val):
-        return self._val_of_exp(self.expr1, val) \
-               * self._val_of_exp(self.expr2, val)
+        prod = 1
+        for expr in self._exprs:
+            prod *= expr
+
+        return prod
 
     def degree(self):
-        return self._calc_degree(self.expr1) \
-               + self._calc_degree(self.expr2)
+        deg = 0
+        for expr in self._exprs:
+            deg += self._calc_degree(expr)
+
+        return deg
+
+    def order(self):
+        ordered = [expr for expr in self._exprs]
+        ordered.sort(key=lambda x: self._calc_degree(x), reverse=True)
+        return ordered
+
 
     def __str__(self):
-        if self._calc_degree(self.expr2) < self._calc_degree(self.expr1):
-            return str(self.expr2) + str(self.expr1)
-
-        return str(self.expr1) + str(self.expr2)
+        return ''.join("{} + ".format(expr) for expr in self.order())[:-2]
 
     def __mul__(self, other):
         if other == self.expr1:

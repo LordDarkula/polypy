@@ -11,6 +11,7 @@ class Commutative(Expression):
     __metaclass__ = ABCMeta
 
     def __init__(self, *args):
+        # TODO multiply out integers
         self._exprs = frozenset([arg for arg in args if not isinstance(arg, int) or arg != 1])
 
         for arg in args:
@@ -38,7 +39,7 @@ class Product(Commutative):
     def __call__(self, val):
         prod = 1
         for expr in self._exprs:
-            prod *= expr
+            prod *= self._val_of_exp(expr, val)
 
         return prod
 

@@ -11,13 +11,29 @@ class Commutative(Expression):
     __metaclass__ = ABCMeta
 
     def __init__(self, *args):
-        # TODO multiply out integers
-        self._exprs = frozenset([arg for arg in args if not isinstance(arg, int) or arg != 1])
+        temp_exprs = set()
+        coefficient = 1
 
         for arg in args:
-            if isinstance(arg, int) and arg == 0:
-                self._exprs = frozenset([0])
-                break
+            if isinstance(arg, int):
+                # If any part is 0 the whole thing is 0
+                if arg == 0:
+                    self._exprs = frozenset([0])
+                    return
+                # 1 can be eliminated because 1 * x = x
+                if arg == 1:
+                    continue
+
+                # Integer parts are collected and combined to form coefficient
+                coefficient *= arg
+
+            else:
+                temp_exprs.add(arg)
+
+        if coefficient != 1:
+            temp_exprs.add(coefficient)
+
+        self._exprs = frozenset(temp_exprs)
 
     @property
     def exprs(self):

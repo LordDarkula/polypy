@@ -11,6 +11,34 @@ class Commutative(Expression):
     __metaclass__ = ABCMeta
 
     def __init__(self, *args):
+        self._exprs = frozenset(args)
+
+    @property
+    def exprs(self):
+        return self._exprs
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and \
+               self._exprs == other.exprs
+
+    @abstractmethod
+    def __call__(self, val):
+        pass
+
+    def order(self, ascending=False):
+        """
+        Converts ''frozenset'' exprs into ''list'' ordered by degree.
+        :rtype: list
+        """
+        ordered = [expr for expr in self._exprs]
+        ordered.sort(key=lambda x: self._calc_degree(x), reverse=ascending)
+        return ordered
+
+
+class Product(Commutative):
+    def __init__(self, *args):
+        super(Product, self).__init__(*args)
+
         temp_exprs = set()
         coefficient = 1
 
@@ -35,23 +63,6 @@ class Commutative(Expression):
 
         self._exprs = frozenset(temp_exprs)
 
-    @property
-    def exprs(self):
-        return self._exprs
-
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and \
-               self._exprs == other.exprs
-
-    @abstractmethod
-    def __call__(self, val):
-        pass
-
-
-class Product(Commutative):
-    def __init__(self, *args):
-        super(Product, self).__init__(args)
-
     def __call__(self, val):
         prod = 1
         for expr in self._exprs:
@@ -70,14 +81,12 @@ class Product(Commutative):
 
         return deg
 
-    def order(self):
+    def order(self, ascending=True):
         """
         Converts ''frozenset'' exprs into ''list'' ordered by degree.
         :rtype: list
         """
-        ordered = [expr for expr in self._exprs]
-        ordered.sort(key=lambda x: self._calc_degree(x), reverse=True)
-        return ordered
+        super(Product, self).order(ascending=True)
 
     def same_base(self, other):
         return isinstance(other, self.__class__) and \
@@ -96,7 +105,7 @@ class Product(Commutative):
         no_overlap = self._exprs.union(other.exprs) - self._exprs.intersection(other.exprs)
         overlap = set([expr**2 for expr in self._exprs.intersection(other.exprs)])
 
-        return no_overlap.
+        return no_overlap.union(overlap)
 
         if other == self.expr1:
             return other * self.expr1 * self.expr2

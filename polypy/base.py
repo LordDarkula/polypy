@@ -106,4 +106,24 @@ class Identity(Expression):
     def __str__(self):
         return "x"
 
+class Negation(Expression):
+    def __init__(self, expr):
+        self._expr = expr
+
+    @property
+    def expr(self):
+        return self._expr
+
+    def __call__(self, val):
+        return - self._val_of_exp(self._expr, val)
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self._expr == other.expr
+
+    def degree(self):
+        return self._calc_degree(self._expr)
+
+    def __str__(self):
+        return "-" + str(self._expr)
+
 x = Identity()

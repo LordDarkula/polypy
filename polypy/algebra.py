@@ -11,7 +11,12 @@ class Commutative(Expression):
     __metaclass__ = ABCMeta
 
     def __init__(self, *args):
-        self._exprs = set([arg for arg in args])
+        self._exprs = frozenset([arg for arg in args if not isinstance(arg, int) or arg != 1])
+
+        for arg in args:
+            if isinstance(arg, int) and arg == 0:
+                self._exprs = frozenset([0])
+                break
 
     @property
     def exprs(self):
@@ -38,6 +43,10 @@ class Product(Commutative):
         return prod
 
     def degree(self):
+        """
+        Returns total degree (ex degree x is 1, degree 3x^3 is 3) of product.
+        :rtype: int
+        """
         deg = 0
         for expr in self._exprs:
             deg += self._calc_degree(expr)
@@ -45,21 +54,27 @@ class Product(Commutative):
         return deg
 
     def order(self):
+        """
+        Converts ''frozenset'' exprs into ''list'' ordered by degree.
+        :rtype: list
+        """
         ordered = [expr for expr in self._exprs]
         ordered.sort(key=lambda x: self._calc_degree(x), reverse=True)
         return ordered
 
     def same_base(self, other):
         return isinstance(other, self.__class__) and \
-               set([expr for expr in self._exprs if not isinstance(expr, int)]) == \
-               set([expr for expr in other.exprs if not isinstance(expr, int)])
+               self.rem_int() == other.rem_int()
+
+    def rem_int(self):
+        return frozenset([expr for expr in self._exprs if not isinstance(expr, int)])
 
     def __str__(self):
         return ''.join("({}) * ".format(expr) for expr in self.order())[:-2] # Removes leftover *
 
     def __mul__(self, other):
         if not isinstance(other, self.__class__):
-            return Product(self, other)
+            return Product(self._exprs.union(other.exprs))
 
         no_overlap = self._exprs.union(other.exprs) - self._exprs.intersection(other.exprs)
         overlap = set([expr**2 for expr in self._exprs.intersection(other.exprs)])

@@ -1,4 +1,5 @@
 from .commutative import Commutative
+from .exponent import Exponent
 
 class Product(Commutative):
     def __init__(self, *args):
@@ -27,6 +28,7 @@ class Product(Commutative):
             temp_exprs.add(coefficient)
 
         self._exprs = frozenset(temp_exprs)
+        self._combine_exp()
 
     def __call__(self, val):
         prod = 1
@@ -63,6 +65,27 @@ class Product(Commutative):
     def __str__(self):
         return ''.join("({}) * ".format(expr) for expr in self.order())[:-2] # Removes leftover *
 
+    def _combine_exp(self):
+        # TODO check if 2 exponents can be combined
+        full_set = set(self._exprs)
+        temp_set = set()
+        for expr in full_set:
+            if isinstance(expr, Exponent):
+
+                for poss_exp in full_set:
+                    if expr.base == poss_exp:
+                        temp_set.add(Exponent(expr.base, expr.exponent + 1))
+                        full_set.remove(expr)
+                        full_set.remove(poss_exp)
+                        break
+                else:
+                    temp_set.add(expr)
+
+            else:
+                temp_set.add(expr)
+
+        self._exprs = frozenset(temp_set)
+
     def __mul__(self, other):
         if not isinstance(other, self.__class__):
             return Product(self._exprs.union(other.exprs))
@@ -72,28 +95,5 @@ class Product(Commutative):
 
         return no_overlap.union(overlap)
 
-        if other == self.expr1:
-            return other * self.expr1 * self.expr2
-
-        if other == self.expr2:
-            return other * self.expr2 * self.expr1
-
-        if isinstance(other, Product):
-            """ If other is a Product and one of it's terms matches this Expression,
-            redistribute to multiply that term with this one first. """
-            if self.expr1 == other.expr1:
-                return self.expr2 * other.expr2 * self.expr1**2
-
-            if self.expr2 == other.expr2:
-                return self.expr1 * other.expr1 * self.expr2**2
-
-            if self.expr1 == other.expr2:
-                return self.expr2 * other.expr1 * self.expr1**2
-
-            if self.expr2 == other.expr1:
-                return self.expr1 * other.expr2 * self.expr2**2
-
-        return Product(self, other)
-
     def __pow__(self, power, modulo=None):
-        return self.expr1**power * self.expr2**power
+        return Product(frozenset([expr**power for expr in self._exprs]))

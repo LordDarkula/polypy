@@ -34,6 +34,9 @@ class Exponent(Expression):
 
         return super(Exponent, self).__mul__(other)
 
+    def __pow__(self, power, modulo=None):
+        return Exponent(self.base, self.exponent*power)
+
 class Logarithm(Expression):
     def __init__(self, base, product):
         self.base = base

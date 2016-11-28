@@ -50,7 +50,7 @@ class Expression:
         from .exponent import Exponent
 
         if other == 1:
-            return x
+            return self
 
         if self == other:
             """ If both expressions are identical return the square. """
@@ -86,12 +86,11 @@ class Expression:
         return self.__add__(other)
 
     def __sub__(self, other):
-        from .algebra import Difference
 
         if self == other:
             return 0
 
-        return Difference(self, other)
+        return self + other*-1
 
 class Identity(Expression):
     def __call__(self, val):
@@ -105,25 +104,3 @@ class Identity(Expression):
 
     def __str__(self):
         return "x"
-
-class Negation(Expression):
-    def __init__(self, expr):
-        self._expr = expr
-
-    @property
-    def expr(self):
-        return self._expr
-
-    def __call__(self, val):
-        return - self._val_of_exp(self._expr, val)
-
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self._expr == other.expr
-
-    def degree(self):
-        return self._calc_degree(self._expr)
-
-    def __str__(self):
-        return "-" + str(self._expr)
-
-x = Identity()

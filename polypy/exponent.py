@@ -5,32 +5,44 @@ from .base import Expression
 
 class Exponent(Expression):
     def __init__(self, base, exponent):
-        self.base = base
-        self.exponent = exponent
+        self._base = base
+        self._exponent = exponent
+
+    @property
+    def base(self):
+        return self._base
+
+    @property
+    def exponent(self):
+        return self._exponent
 
     def __call__(self, val):
-        return self._val_of_exp(self.base, val) \
-               ** self._val_of_exp(self.exponent, val)
+        return self._val_of_exp(self._base, val) \
+               ** self._val_of_exp(self._exponent, val)
 
     def __eq__(self, other):
         return isinstance(other, Exponent) \
-               and self.base == other.base \
-               and self.exponent == other.exponent
+               and self._base == other.base \
+               and self._exponent == other.exponent
 
     def degree(self):
-        if isinstance(self.exponent, int):
-            return self.exponent
+        if isinstance(self._exponent, int):
+            return self._exponent
 
         return 100
 
     def __str__(self):
-        return str(self.base) + "^" + str(self.exponent)
+        return str(self._base) + "^" + str(self._exponent)
 
     def __mul__(self, other):
-        if self.base == other:
+        if isinstance(other, self.__class__) and self._base == other.base:
+            """ If both exponents have the same base """
+            return Exponent(self._base, self._exponent + other.exponent)
+
+        if self._base == other:
             """ If other is an Exponent and base matches this Expression,
             return Exponent of same base with +1 exponent."""
-            return Exponent(self.base, self.exponent + 1)
+            return Exponent(self._base, self._exponent + 1)
 
         return super(Exponent, self).__mul__(other)
 

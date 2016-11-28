@@ -63,18 +63,17 @@ class Product(Commutative):
         return frozenset([expr for expr in self._exprs if not isinstance(expr, int)])
 
     def __str__(self):
-        return ''.join("({}) * ".format(expr) for expr in self.order())[:-2] # Removes leftover *
+        return ''.join("{} * ".format(expr) for expr in self.order())[:-2] # Removes leftover *
 
     def _combine_exp(self):
-        # TODO check if 2 exponents can be combined
         full_set = set(self._exprs)
         temp_set = set()
         for expr in full_set:
             if isinstance(expr, Exponent):
 
                 for poss_exp in full_set:
-                    if expr.base == poss_exp:
-                        temp_set.add(Exponent(expr.base, expr.exponent + 1))
+                    if expr.base == poss_exp or isinstance(poss_exp, Exponent):
+                        temp_set.add(expr.__mul__(poss_exp))
                         full_set.remove(expr)
                         full_set.remove(poss_exp)
                         break

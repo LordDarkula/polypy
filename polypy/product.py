@@ -1,11 +1,18 @@
 from .commutative import Commutative
-from .exponent import Exponent
 
 class Product(Commutative):
     def __init__(self, *args):
         super(Product, self).__init__(*self.simplified(*args))
 
     def simplified(self, *args):
+        """
+        Returns a sequence containing expressions that make a simplified Product.
+        Used when ``Product`` is initialized to simplify.
+        Uses ``self.exprs`` when no arguments are provided.
+
+        :type: args: int or Commutative
+        :rtype: seq
+        """
         coefficient = 1
         args = args or self._exprs
 
@@ -58,26 +65,6 @@ class Product(Commutative):
 
     def __str__(self):
         return ''.join("{} * ".format(expr) for expr in self.order())[:-2] # Removes leftover *
-
-    def _combine_exp(self):
-        full_set = set(self._exprs)
-        temp_set = set()
-        for expr in full_set:
-            if isinstance(expr, Exponent):
-
-                for poss_exp in full_set:
-                    if expr.base == poss_exp or isinstance(poss_exp, Exponent):
-                        temp_set.add(expr.__mul__(poss_exp))
-                        full_set.remove(expr)
-                        full_set.remove(poss_exp)
-                        break
-                else:
-                    temp_set.add(expr)
-
-            else:
-                temp_set.add(expr)
-
-        self._exprs = frozenset(temp_set)
 
     def __mul__(self, other):
         if not isinstance(other, self.__class__):

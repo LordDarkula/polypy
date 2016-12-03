@@ -46,7 +46,8 @@ class Expression:
         pass
 
     def __mul__(self, other):
-        from .algebra import Product, Sum
+        from .product import Product
+        from .sum import Sum
         from .exponent import Exponent
 
         if other == 1:
@@ -61,36 +62,44 @@ class Expression:
 
         return Product(self, other)
 
-    def __rmul__(self, other):
-        return self.__mul__(other)
+
 
     def __pow__(self, power, modulo=None):
         from .exponent import Exponent
 
         return Exponent(self, power)
 
-    def __rpow__(self, other):
-        from  .exponent import Exponent
 
-        return Exponent(other, self)
 
     def __add__(self, other):
-        from .algebra import Sum
+        from .sum import Sum
+
+        if other == 0:
+            return self
 
         if self == other:
-            return 2 * self
+            return self.__mul__(2)
 
         return Sum(self, other)
-
-    def __radd__(self, other):
-        return self.__add__(other)
 
     def __sub__(self, other):
 
         if self == other:
             return 0
 
-        return self + other*-1
+        return self + other.__mul__(-1)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __rpow__(self, other):
+        return self.__pow__(other)
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __rsub__(self, other):
+        return self.__sub__(other)
 
 class Identity(Expression):
     def __call__(self, val):

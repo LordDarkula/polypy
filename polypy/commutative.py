@@ -10,7 +10,13 @@ class Commutative(Expression):
     __metaclass__ = ABCMeta
 
     def __init__(self, *args):
-        self._exprs = frozenset(args)
+        self._exprs = set()
+        for arg in args:
+            if arg is None:
+                self._exprs = frozenset([0])
+                return
+            self._exprs.add(arg)
+        self._exprs = frozenset(self._exprs)
 
     @property
     def exprs(self):

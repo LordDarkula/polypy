@@ -3,32 +3,26 @@ from .exponent import Exponent
 
 class Product(Commutative):
     def __init__(self, *args):
-        super(Product, self).__init__(*args)
+        super(Product, self).__init__(*self.simplified(*args))
 
-        temp_exprs = set()
+    def simplified(self, *args):
         coefficient = 1
+        args = args or self._exprs
 
         for arg in args:
             if isinstance(arg, int):
                 # If any part is 0 the whole thing is 0
                 if arg == 0:
-                    self._exprs = frozenset([0])
-                    return
+                    yield None
                 # 1 can be eliminated because 1 * x = x
                 if arg == 1:
                     continue
 
-                # Integer parts are collected and combined to form coefficient
                 coefficient *= arg
-
             else:
-                temp_exprs.add(arg)
+                yield arg
 
-        if coefficient != 1:
-            temp_exprs.add(coefficient)
-
-        self._exprs = frozenset(temp_exprs)
-        self._combine_exp()
+            yield coefficient
 
     def __call__(self, val):
         prod = 1
@@ -53,7 +47,7 @@ class Product(Commutative):
         Converts ''frozenset'' exprs into ''list'' ordered by degree.
         :rtype: list
         """
-        super(Product, self).order(ascending=True)
+        return super(Product, self).order(ascending=True)
 
     def same_base(self, other):
         return isinstance(other, self.__class__) and \
@@ -87,7 +81,7 @@ class Product(Commutative):
 
     def __mul__(self, other):
         if not isinstance(other, self.__class__):
-            return Product(self._exprs.union(other.exprs))
+            return Product(*self._exprs, other)
 
         no_overlap = self._exprs.union(other.exprs) - self._exprs.intersection(other.exprs)
         overlap = set([expr**2 for expr in self._exprs.intersection(other.exprs)])

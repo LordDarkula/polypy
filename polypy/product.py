@@ -10,7 +10,7 @@ class Product(Commutative):
         Used when ``Product`` is initialized to simplify.
         Uses ``self.exprs`` when no arguments are provided.
 
-        :type: args: int or Commutative
+        :type: args: int or Expression
         :rtype: seq
         """
         coefficient = 1
@@ -29,7 +29,8 @@ class Product(Commutative):
             else:
                 yield arg
 
-            yield coefficient
+            if coefficient != 0:
+                yield coefficient
 
     def __call__(self, val):
         prod = 1
@@ -76,4 +77,4 @@ class Product(Commutative):
         return no_overlap.union(overlap)
 
     def __pow__(self, power, modulo=None):
-        return Product(frozenset([expr**power for expr in self._exprs]))
+        return Product(*[expr**power for expr in self._exprs])

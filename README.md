@@ -17,23 +17,23 @@ from polypy.base import x
 To create basic functions 
 ``` python
 # Simple linear function
-f = 2*x
-f(3)
->>> 6
+>>> f = 2*x
+>>> f(3)
+6
 
 # Quadratic function
-f = 3*x**2 + 2*x + 3
-f(1)
->>> 8
+>>> f = 3*x**2 + 2*x + 3
+>>> f(1)
+8
 
 ```
 Simple functions can be chained together to create more complex 
 functions.
 ``` python
 # g = 2^2^x
-g = 2**2**x
-f = x + 3
+>>> g = 2**2**x
+>>> f = x + 3
 
 # h = 2^2^x + 3
-h = f(g)
+>>> h = f(g)
 ```
